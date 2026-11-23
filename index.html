@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Çiz Bil</title>
+<style>
+:root{--yesil:#17352c;--krem:#fbf6e9;--sari:#f4c542;--mur:#22302b;--cizgi:#d9d2bd;--kirmizi:#c4382f}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--krem);color:var(--mur);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer;border:2px solid var(--cizgi);background:#fff;color:var(--mur);border-radius:10px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sari);outline-offset:2px}
+#kopuk{background:var(--kirmizi);color:#fff;display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 10px;font-weight:600}
+#kopuk button{background:#fff;color:var(--kirmizi);border:0;padding:4px 12px;min-height:32px}
+.sayfa{max-width:860px;margin:0 auto;padding:32px 16px;text-align:center}
+.sayfa h1{font-size:52px;margin:0;color:var(--yesil)}
+.sayfa p{font-size:21px;margin:8px 0 22px}
+#kodForm{display:flex;flex-direction:column;align-items:center;gap:14px}
+#kodGir{width:230px;font-size:64px;font-weight:800;text-align:center;letter-spacing:.14em;padding:8px 4px 8px 14px;border:3px solid var(--yesil);border-radius:12px;background:#fff;color:var(--mur)}
+#kodBtn{min-height:58px;padding:8px 44px;font-size:23px;font-weight:700;background:var(--sari);border-color:var(--sari)}
+.hata{color:var(--kirmizi);font-weight:600;min-height:28px;font-size:18px!important}
+#takimlar{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
+#takimlar button{min-height:66px;font-size:19px;font-weight:600}
+#takimlar button:hover:not(:disabled){background:var(--sari);border-color:var(--sari)}
+#takimlar button:disabled{background:#ece6d6;color:#8b8672;cursor:not-allowed}
+#oyun{height:100%;display:flex;flex-direction:column}
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:var(--yesil);color:var(--krem);padding:8px 16px}
+#takimAd{font-size:19px;font-weight:600}
+#kelime{font-size:32px;color:var(--sari);text-align:center;line-height:1.15}
+#sayac{font-size:30px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+#sayac.az{color:#ff9b8f}
+#durum{margin:0;padding:7px 12px;text-align:center;font-size:18px;font-weight:600;background:#f3ebd3}
+.alan{flex:1;min-height:0;display:flex;gap:10px;padding:10px}
+.araclar{width:132px;flex:none;display:flex;flex-direction:column;gap:8px;overflow:auto}
+.renkler,.boyutlar{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.boyutlar{grid-template-columns:repeat(3,1fr)}
+.renk{height:40px;border:3px solid #fff;outline:1px solid var(--cizgi)}
+.renk.secili{outline:3px solid var(--mur)}
+.boyut{height:40px;display:flex;align-items:center;justify-content:center;padding:0}
+.boyut i{display:block;background:var(--mur);border-radius:50%}
+.boyut.secili,.arac.secili{background:var(--sari);border-color:var(--mur)}
+.arac{min-height:42px;font-size:15px;font-weight:600}
+.tuvalKap{flex:1;min-width:0;min-height:0;display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100%;max-height:100%;background:#fff;border:2px solid var(--mur);border-radius:6px;touch-action:none;cursor:crosshair}
+canvas.kilitli{cursor:not-allowed}
+@media (max-width:640px){.alan{flex-direction:column}.araclar{width:100%;flex-direction:row;flex-wrap:wrap}.renkler{grid-template-columns:repeat(8,1fr);flex:1 1 100%}.boyutlar{flex:1}.arac{flex:1}header{grid-template-columns:auto 1fr auto}#kelime{font-size:24px}}
+</style>
+</head>
+<body>
+<div id="kopuk" role="alert" hidden><span>Bağlantı koptu, yeniden bağlanıyor</span><button id="cik">Odadan çık</button></div>
+<section id="kodEkran" class="sayfa">
+  <h1>Çiz Bil</h1>
+  <p>Tahtadaki 3 haneli kodu yaz</p>
+  <form id="kodForm"><input id="kodGir" inputmode="numeric" autocomplete="off" maxlength="3" aria-label="Oda kodu" placeholder="000"><button id="kodBtn">Odaya gir</button></form>
+  <p class="hata" id="kodHata" role="alert"></p>
+</section>
+<section id="takimEkran" class="sayfa" hidden>
+  <h1>Takımını seç</h1>
+  <p id="odaYazi"></p>
+  <div id="takimlar"></div>
+  <p class="hata" id="takimHata" role="alert"></p>
+</section>
+<section id="oyun" hidden>
+  <header><span id="takimAd"></span><strong id="kelime"></strong><span id="sayac"></span></header>
+  <p id="durum" role="status"></p>
+  <div class="alan">
+    <div class="araclar">
+      <div class="renkler" id="renkler"></div>
+      <div class="boyutlar" id="boyutlar"></div>
+      <button class="arac" id="silgi">Silgi</button>
+      <button class="arac" id="geri">Geri al</button>
+      <button class="arac" id="temizle">Temizle</button>
+    </div>
+    <div class="tuvalKap"><canvas id="tuval" width="1000" height="700" aria-label="Çizim alanı"></canvas></div>
+  </div>
+</section>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="kelimeler.js"></script>
+<script src="cocuk.js"></script>
+</body>
+</html>

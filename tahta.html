@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Çiz Bil Tahta</title>
+<style>
+:root{--tahta:#17352c;--tahta2:#20473b;--cizgi:#3c6a5b;--krem:#fbf6e9;--soluk:#b9cdc3;--sari:#f4c542;--kirmizi:#ff8f82}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{min-height:100%;margin:0}
+body{background:var(--tahta);color:var(--krem);font-family:"Segoe UI",Tahoma,Arial,sans-serif;display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;min-height:52px;padding:8px 20px;border-radius:10px;border:2px solid var(--cizgi);background:var(--tahta2);color:var(--krem);font-weight:600;font-size:20px}
+button:hover{border-color:var(--sari)}
+button:focus-visible{outline:3px solid var(--sari);outline-offset:2px}
+button.ana{background:var(--sari);border-color:var(--sari);color:#1d2a25;font-size:24px;padding:10px 34px;min-height:64px}
+button.secili{background:var(--sari);border-color:var(--sari);color:#1d2a25}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:8px 22px;border-bottom:2px solid var(--cizgi);flex-wrap:wrap}
+header strong{font-size:26px;color:var(--sari)}
+.sag{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#ust{font-size:19px;color:var(--soluk)}
+#ustKod{font-size:21px;font-weight:700}
+#kilit{min-height:42px;font-size:16px;padding:4px 14px}
+main{flex:1;display:flex;flex-direction:column;padding:16px 22px;gap:15px;min-width:0}
+.orta{align-items:center;justify-content:center;text-align:center}
+.satir{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
+.etiket{color:var(--soluk);font-size:20px;margin:0}
+#adres{font-size:clamp(20px,2.4vw,34px);font-weight:600;margin:0;overflow-wrap:anywhere}
+#kod{font-size:clamp(90px,15vw,200px);line-height:1;font-weight:800;color:var(--sari);letter-spacing:.08em;margin:0;font-variant-numeric:tabular-nums}
+.ayarlar{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;align-items:flex-end}
+.ayar{display:flex;flex-direction:column;gap:6px;align-items:center}
+.adim{display:flex;align-items:center;gap:6px}
+.adim b{min-width:72px;text-align:center;font-size:32px}
+.adim button{width:56px;padding:0;font-size:28px}
+#cipler{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:7px;width:min(1200px,100%)}
+.cip{min-height:44px;font-size:16px;padding:4px;color:var(--soluk);background:transparent;border-style:dashed}
+.cip.dolu{background:var(--tahta2);color:var(--krem);border-style:solid;border-color:#67c29a}
+.cip.kopuk{border-color:var(--kirmizi)}
+.dev{font-size:clamp(64px,13vw,190px);line-height:1.05;font-weight:800;margin:0;overflow-wrap:anywhere}
+#sayac{font-size:clamp(56px,9vw,130px);font-weight:800;color:var(--sari);font-variant-numeric:tabular-nums;line-height:1}
+#sayac.az{color:var(--kirmizi)}
+.bar{width:min(900px,100%);height:14px;background:var(--tahta2);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--sari)}
+.pust{display:flex;align-items:baseline;justify-content:center;gap:14px;flex-wrap:wrap}
+.pust h2{font-size:38px;margin:0;color:var(--sari)}
+#kartlar{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.kart{background:var(--tahta2);border:2px solid var(--cizgi);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.kart.puanli{border-color:var(--sari)}
+.kbas{display:flex;justify-content:space-between;align-items:baseline;font-size:18px;font-weight:700}
+.kbas span{font-size:15px;font-weight:400;color:var(--soluk)}
+.res{aspect-ratio:10/7;width:100%;background:#fff;border-radius:6px;padding:0;border:0;min-height:0;display:flex;align-items:center;justify-content:center;color:#6d6a5e;font-size:17px;overflow:hidden}
+.res img{width:100%;height:100%;object-fit:contain;display:block}
+.tus{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.tus button{padding:0;min-height:46px;font-size:20px}
+.alt{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--tahta);padding:10px 0;border-top:2px solid var(--cizgi)}
+#buyuk{position:fixed;inset:0;background:#000c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;z-index:5}
+#buyuk img{max-width:100%;max-height:82vh;background:#fff;border-radius:8px}
+#buyuk p{font-size:26px;font-weight:700;margin:0}
+#sirala{list-style:none;margin:0;padding:0;width:min(760px,100%);display:flex;flex-direction:column;gap:6px}
+#sirala li{display:flex;justify-content:space-between;background:var(--tahta2);border-radius:8px;padding:9px 18px;font-size:21px}
+#sirala li.ilk{background:var(--sari);color:#1d2a25;font-weight:800;font-size:27px}
+#mesaj{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#fff;color:#7d1f17;padding:11px 20px;border-radius:8px;font-weight:600;z-index:6;max-width:90vw}
+</style>
+</head>
+<body>
+<header><strong>Çiz Bil</strong><div class="sag"><span id="ust"></span><span id="ustKod"></span><button id="kilit"></button></div></header>
+<main id="baglan" class="orta"><p class="dev" style="font-size:48px">Oda açılıyor</p><p class="etiket" id="baglanYazi">İnternet bağlantısı kontrol ediliyor</p><button id="tekrar" hidden>Tekrar dene</button></main>
+<main id="lobi" class="orta" hidden>
+  <p class="etiket">Bilgisayarlarda bu siteyi açın ve kodu yazın</p><p id="adres"></p><p id="kod"></p>
+  <div class="ayarlar">
+    <div class="ayar"><span class="etiket">Takım sayısı</span><div class="adim"><button data-a="takimSayisi,-1" aria-label="Takım azalt">−</button><b id="aTakim"></b><button data-a="takimSayisi,1" aria-label="Takım artır">+</button></div></div>
+    <div class="ayar"><span class="etiket">Kelime sayısı</span><div class="adim"><button data-a="kelimeSayisi,-1" aria-label="Kelime azalt">−</button><b id="aKelime"></b><button data-a="kelimeSayisi,1" aria-label="Kelime artır">+</button></div></div>
+    <div class="ayar"><span class="etiket">Süre</span><div class="satir sureler"></div></div>
+  </div>
+  <div id="cipler"></div>
+  <button class="ana" id="basla">Oyunu başlat</button>
+</main>
+<main id="hazir" class="orta" hidden>
+  <p class="etiket" id="hTur"></p><p class="dev" id="hKelime"></p>
+  <div class="satir sureler"></div>
+  <div class="satir"><button id="baska">Başka kelime</button><button class="ana" id="git">Süreyi başlat</button></div>
+</main>
+<main id="ciziyor" class="orta" hidden>
+  <p class="dev" id="cKelime"></p><div id="sayac" role="timer"></div><div class="bar"><i id="bar"></i></div>
+  <p class="etiket" id="gelen"></p>
+  <div class="satir"><button id="dur">Duraklat</button><button id="ekle">+15 saniye</button><button id="bitir">Süreyi bitir</button></div>
+</main>
+<main id="puanlama" hidden>
+  <div class="pust"><h2 id="pKelime"></h2><span class="etiket" id="pTur"></span></div>
+  <div id="kartlar"></div>
+  <div class="alt"><span class="etiket" id="pSay"></span><div class="satir"><button id="oyunBitir">Oyunu bitir</button><button class="ana" id="sonraki"></button></div></div>
+</main>
+<main id="bitti" class="orta" hidden>
+  <p class="etiket">Kazanan</p><p class="dev" id="kazanan" style="font-size:clamp(44px,7vw,100px);color:var(--sari)"></p>
+  <ol id="sirala"></ol><button class="ana" id="yeni">Yeni oyun</button>
+</main>
+<div id="buyuk" hidden><img alt="Büyütülmüş çizim"><p></p><button>Kapat</button></div>
+<div id="mesaj" role="alert" hidden></div>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="kelimeler.js"></script>
+<script src="tahta.js"></script>
+</body>
+</html>
